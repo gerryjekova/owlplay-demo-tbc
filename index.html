@@ -565,8 +565,9 @@ const STORE_KEY = 'owlplay:matchups';
 
 async function loadData(){
   try{
-    const res = await window.storage.get(STORE_KEY, false);
-    matchups = JSON.parse(res.value);
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw === null) throw new Error('no data yet');
+    matchups = JSON.parse(raw);
   }catch(e){
     matchups = JSON.parse(JSON.stringify(DEFAULT_MATCHUPS));
     await persist();
@@ -608,7 +609,7 @@ function renderDashboard(){
   `;
 }
 async function persist(){
-  try{ await window.storage.set(STORE_KEY, JSON.stringify(matchups), false); }
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(matchups)); }
   catch(e){ console.error('storage failed', e); }
 }
 
